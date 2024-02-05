@@ -79,7 +79,7 @@ function displayMecabResult(parseResult, sentenceBox) {
     });
 }
 
-// 传统翻译器的翻译和显示逻辑
+// Google翻译器
 function googleTranslation(text) {
     const container = document.getElementById('google-translation-container');
     container.innerHTML = ''; // 清空旧的翻译结果
@@ -88,12 +88,12 @@ function googleTranslation(text) {
         .then(response => response.json())
         .then(data => {
             if (data.output) {
-                displayTranslation(data.output, 'goo', 'google-translation-container');
+                displayTranslation(data.output, 'google', 'google-translation-container');
             }
         })
         .catch(error => {
             console.error('Error fetching traditional translation:', error);
-            displayTranslation('Google翻译失败', 'goo', 'google-translation-container');
+            displayTranslation('Google翻译失败', 'google', 'google-translation-container');
         });
 }
 
@@ -106,12 +106,12 @@ function chatgptTranslation(text) {
         .then(response => response.json())
         .then(data => {
             if (data.output) {
-                displayTranslation(data.output, 'gpt', 'chatgpt-translation-container');
+                displayTranslation(data.output, 'chatgpt', 'chatgpt-translation-container');
             }
         })
         .catch(error => {
             console.error('Error fetching ChatGPT translation:', error);
-            displayTranslation('ChatGPT翻译失败', 'gpt', 'chatgpt-translation-container');
+            displayTranslation('ChatGPT翻译失败', 'chatgpt', 'chatgpt-translation-container');
         });
 }
 
@@ -119,7 +119,8 @@ function chatgptTranslation(text) {
 function displayTranslation(translation, source, containerId) {
     const container = document.getElementById(containerId);
     const p = document.createElement('p');
-    p.textContent = `${source}: ${translation}`;
+    p.textContent = `${translation}`;
+    p.className = `translation translation-${source}`;
     container.appendChild(p);
 }
 
@@ -199,20 +200,24 @@ function displayDictionaryResult(result, dictionary, containerId) {
     container.style.display = 'block'; // 总是显示容器
 }
 
+// 为每个词典切换标签添加点击事件监听器
+document.querySelectorAll('.dictionary-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const dictionary = this.getAttribute('data-dictionary');
+        switchDictionary(dictionary);
+    });
+});
+
 function switchDictionary(dictionary) {
-    // 隐藏所有词典结果
-    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
-        const container = document.getElementById(containerId);
+    // 移除所有标签的激活状态，并隐藏所有词典结果
+    document.querySelectorAll('.dictionary-tab').forEach(tab => {
+        tab.classList.remove('active-tab');
+    });
+    document.querySelectorAll('.dictionary-content').forEach(container => {
         container.style.display = 'none';
     });
-    // 显示选定的词典结果
-    const selectedContainer = document.getElementById(`${dictionary}-container`);
-    selectedContainer.style.display = 'block';
-}
 
-function clearDictionaryResults() {
-    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
-        const container = document.getElementById(containerId);
-        container.innerHTML = ''; // 清空内容
-    });
+    // 激活点击的标签，并显示对应的词典结果
+    document.querySelector(`button[data-dictionary="${dictionary}"]`).classList.add('active-tab');
+    document.getElementById(`${dictionary}-container`).style.display = 'block';
 }

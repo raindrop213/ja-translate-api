@@ -34,18 +34,17 @@
                 <div id="google-translation-container"></div>
                 <div id="chatgpt-translation-container"></div>
             </div>
-        </div> <!-- 文本框 -->
-            <div id="dictionaryBox"> <!-- 词典框 -->
-                <button onclick="switchDictionary('moji')">Moji</button>
-                <button onclick="switchDictionary('youdao')">Youdao</button>
-                <button onclick="switchDictionary('weblio')">Weblio</button>
-                <div id="dictionaryResult">
-                    <div id="moji-container"></div>
-                    <div id="youdao-container"></div>
-                    <div id="weblio-container"></div>
-                </div>
+        <!-- 词典切换标签 -->
+            <div id="dictionarySwitch">
+                <button class="dictionary-tab" data-dictionary="moji">Moji</button>
+                <button class="dictionary-tab" data-dictionary="youdao">Youdao</button>
+                <button class="dictionary-tab" data-dictionary="weblio">Weblio</button>
             </div>
-        </div>
+            <div id="dictionaryResult">
+                <div id="moji-container" class="dictionary-content"></div>
+                <div id="youdao-container" class="dictionary-content"></div>
+                <div id="weblio-container" class="dictionary-content"></div>
+            </div>
         <!-- 按钮框（预留） -->
     </div>
 

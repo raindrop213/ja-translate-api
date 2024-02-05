@@ -45,7 +45,6 @@ body {
 }
 
 
-
 .mecabSpan {
     margin: 1px;
     font-size: 1.5em;
@@ -92,3 +91,44 @@ body {
     background: rgba(128, 128, 128, 0.473);
 }
 
+/* #analysisModal {
+    display:none;
+    position:fixed;
+    top:100px;
+    left:200px;
+    width:450px;
+    height:400px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #646464;
+    padding:10px;
+    overflow:auto;
+} */
+
+
+
+.translation {
+    margin: 10px 0px;
+}
+
+.translation-google {
+    color:rgb(57, 41, 163);
+}
+.translation-chatgpt {
+    color: darkgreen;
+}
+
+.dictionary-content {
+    display: none; /* 默认隐藏所有词典结果 */
+}
+
+.active-tab {
+    background-color: #f0f0f0; /* 激活标签的背景色 */
+}
+
+.active-content {
+    display: block; /* 显示激活的词典结果 */
+}
+
+#resizeHandle {
+    cursor: se-resize; /* 表示可斜向南东（右下角）调整大小 */
+}
