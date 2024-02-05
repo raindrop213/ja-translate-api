@@ -156,14 +156,15 @@ document.body.addEventListener('click', function(event) {
         const ruby = target.querySelector('ruby'); // 尝试找到`ruby`元素
         if (ruby) {
             console.log('点击了含有ruby的mecabSpan元素');
-            const word = ruby.textContent.trim(); // 获取含注音的文本
-            console.log('查询的单词及其注音是：', word);
-            fetchDictionaryResults(word)
-            // 此处调用API函数，处理含注音的文本
+            // 修改此处以正确处理ruby元素，去除rt标签的内容
+            const word = Array.from(ruby.childNodes).filter(node => node.nodeType === Node.TEXT_NODE || node.nodeName.toLowerCase() !== 'rt').map(node => node.textContent).join('').trim();
+            console.log('查询的单词：', word);
+            fetchDictionaryResults(word);
+            // 此处调用API函数，处理不含注音的文本
         } else {
             console.log('点击了不含ruby的mecabSpan元素');
             const wordWithoutFurigana = target.textContent.trim(); // 直接获取文本
-            console.log('查询的单词是：', wordWithoutFurigana);
+            console.log('查询的单词：', wordWithoutFurigana);
             // 可以选择进行不同的处理，或忽略
         }
     } else {
@@ -171,12 +172,13 @@ document.body.addEventListener('click', function(event) {
     }
 });
 
+
 function fetchDictionaryResults(word) {
     // 默认显示Moji结果
     fetchDictionaryResult(word, 'moji', 'moji-container');
     // 预加载其他词典结果，但不立即显示
     fetchDictionaryResult(word, 'youdao', 'youdao-container', true);
-    fetchDictionaryResult(word, 'weblio', 'weblio-container', true);
+    fetchDictionaryResult(word, 'webilo', 'webilo-container', true);
 }
 
 function fetchDictionaryResult(word, dictionary, containerId, hide = false) {
@@ -200,7 +202,7 @@ function displayDictionaryResult(result, dictionary, containerId, hide) {
 
 function switchDictionary(dictionary) {
     // 隐藏所有词典结果
-    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
+    ['moji-container', 'youdao-container', 'webilo-container'].forEach(containerId => {
         const container = document.getElementById(containerId);
         container.style.display = 'none';
     });
@@ -210,7 +212,7 @@ function switchDictionary(dictionary) {
 }
 
 function clearDictionaryResults() {
-    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
+    ['moji-container', 'youdao-container', 'webilo-container'].forEach(containerId => {
         const container = document.getElementById(containerId);
         container.innerHTML = ''; // 清空内容
     });
