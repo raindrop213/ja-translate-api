@@ -40,19 +40,26 @@ body {
     display: table;
 }
 
-#mecab {
-    padding: 20px;
+#sentence {
+    line-height: 2.3; /* 这会将行距设置为字体大小的1.5倍 */
 }
-
 
 .mecabSpan {
-    margin: 1px;
-    font-size: 1.5em;
-    opacity: 0.5;
+    padding: 9px 2px 2px 2px;
+    margin: 0px 1px;
+    font-size: 1em;
+    opacity: 0.6;
 }
+
 .mecabSpan:hover {
     opacity: 1;
 }
+
+.active-span {
+    opacity: 1; /* 设置透明度为1 */
+    border: 1px solid black; /* 添加黑色边缘线 */
+}
+
 
 .名詞, .指示詞 {
     background-color: rgba(87, 87, 214, 0.39);
@@ -91,20 +98,10 @@ body {
     background: rgba(128, 128, 128, 0.473);
 }
 
-/* #analysisModal {
-    display:none;
-    position:fixed;
-    top:100px;
-    left:200px;
-    width:450px;
-    height:400px;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #646464;
-    padding:10px;
-    overflow:auto;
-} */
 
-
+#translator {
+    line-height: 20px; /* 这会将行距设置为20像素 */
+}
 
 .translation {
     margin: 10px 0px;
@@ -118,8 +115,43 @@ body {
 }
 
 .dictionary-content {
+    position: relative; /* 确保伪元素相对于此定位 */
     display: none; /* 默认隐藏所有词典结果 */
+    border: 1px solid #000;
+    padding: 3px;
+    border-radius: 5px;
+    margin: 10px 0;
 }
+
+#moji-container:before, #youdao-container:before, #weblio-container:before {
+    content: attr(data-title); /* 使用属性值作为内容 */
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px 5px;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    font-size: 0.8em;
+    border-bottom-left-radius: 4px;
+}
+
+#moji-container {
+    --dictionary-name: "Moji";
+}
+
+#youdao-container {
+    --dictionary-name: "Youdao";
+}
+
+#weblio-container {
+    --dictionary-name: "Weblio";
+}
+
+#moji-container:before { content: "Moji"; }
+#youdao-container:before { content: "Youdao"; }
+#weblio-container:before { content: "Weblio"; }
+
+
 
 .active-tab {
     background-color: #f0f0f0; /* 激活标签的背景色 */
@@ -129,6 +161,54 @@ body {
     display: block; /* 显示激活的词典结果 */
 }
 
+
+#analysisModal {
+    display: none;
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    width: 450px;
+    height: 400px;
+    background-color: white;
+    border: 1px solid #000;
+    padding: 7px 7px 9px 7px;
+    z-index: 5000;
+}
+
+#textBox {
+    padding: 1px;
+    max-height: 100%; /* 或设置为具体的高度值，确保内容超出时可滚动 */
+    overflow: auto; /* 允许内容超出时显示滚动条 */
+}
+
+
 #resizeHandle {
-    cursor: se-resize; /* 表示可斜向南东（右下角）调整大小 */
+    position: absolute; 
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nwse-resize;
+    z-index: 5001; /* 确保它在其他元素之上 */
+}
+.frame-resizer-svg {
+    bottom: 0;
+    right: 0;
+}
+
+#scrollToTopButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 25px;
+    height: 40px;
+    background-color: transparent;
+    margin-right: 25px;
+    padding: 0;
+    cursor: pointer;
+    z-index: 5001;
+}
+.frame-top-svg {
+    bottom: 0;
+    right: 0;
 }

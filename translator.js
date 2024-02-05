@@ -44,6 +44,47 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    const analysisModal = document.getElementById('analysisModal');
+    const resizeHandle = document.getElementById('resizeHandle');
+
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        isResizing = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', stopResize);
+    });
+
+    function handleMouseMove(e) {
+        if (isResizing) {
+            const width = e.clientX - analysisModal.offsetLeft;
+            const height = e.clientY - analysisModal.offsetTop;
+            analysisModal.style.width = `${width}px`;
+            analysisModal.style.height = `${height}px`;
+        }
+    }
+
+    function stopResize(e) {
+        if (isResizing) {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            // 存储新的尺寸
+            localStorage.setItem('modalWidth', analysisModal.style.width);
+            localStorage.setItem('modalHeight', analysisModal.style.height);
+        }
+    }
+
+    // 页面加载时应用存储的尺寸
+    const storedWidth = localStorage.getItem('modalWidth');
+    const storedHeight = localStorage.getItem('modalHeight');
+    if (storedWidth && storedHeight) {
+        analysisModal.style.width = storedWidth;
+        analysisModal.style.height = storedHeight;
+    }
+});
+
 function displayMecabResult(parseResult, sentenceBox) {
     // 清空句子框以显示新的结果
     sentenceBox.innerHTML = '';
@@ -145,28 +186,32 @@ function convertToHiragana(katakana) {
 }
 
 document.body.addEventListener('click', function(event) {
-    let target = event.target.closest('.mecabSpan'); // 直接尝试找到最近的包含`mecabSpan`类的祖先元素
+    let target = event.target.closest('.mecabSpan'); // 尝试找到最近的包含`mecabSpan`类的祖先元素
+
+    // 不再移除所有mecabSpan元素的.active-span类
+    
 
     // 如果找到包含`mecabSpan`类的元素
     if (target) {
-        const ruby = target.querySelector('ruby'); // 尝试找到`ruby`元素
+        document.querySelectorAll('.mecabSpan').forEach(el => el.classList.remove('active-span')); // 先移除其他的.active-span类
+        target.classList.add('active-span'); // 然后为当前点击的元素添加.active-span类
+
+        document.querySelectorAll('.dictionary-tab').forEach(tab => {tab.classList.remove('active-tab');}); // 刷新按钮 移除.active-tap类
+
+        const ruby = target.querySelector('ruby');
         if (ruby) {
             console.log('点击了含有ruby的mecabSpan元素');
-            // 处理ruby元素，去除rt标签的内容
             const word = Array.from(ruby.childNodes).filter(node => node.nodeType === Node.TEXT_NODE || node.nodeName.toLowerCase() !== 'rt').map(node => node.textContent).join('').trim();
             console.log('查询的单词：', word);
             fetchDictionaryResults(word);
         } else {
             console.log('点击了不含ruby的mecabSpan元素');
-            const wordWithoutFurigana = target.textContent.trim(); // 直接获取文本
+            const wordWithoutFurigana = target.textContent.trim();
             console.log('查询的单词：', wordWithoutFurigana);
             fetchDictionaryResults(wordWithoutFurigana);
         }
-    } else {
-        console.log('点击了其他元素');
     }
 });
-
 
 function fetchDictionaryResults(word) {
     // 按顺序查询所有词典
@@ -179,15 +224,15 @@ function fetchDictionaryResult(word, dictionary, containerId) {
     fetch(`${url}/${dictionary}?text=${encodeURIComponent(word)}`)
         .then(response => response.json())
         .then(data => {
-            displayDictionaryResult(data.output, dictionary, containerId);
+            displayDictionaryResult(data.output, containerId);
         })
         .catch(error => {
             console.error(`Error fetching ${dictionary} dictionary:`, error);
-            displayDictionaryResult(`${dictionary}查询失败`, dictionary, containerId);
+            displayDictionaryResult(`${dictionary}查询失败`, containerId);
         });
 }       
 
-function displayDictionaryResult(result, dictionary, containerId) {
+function displayDictionaryResult(result, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = result;
     container.style.display = 'block'; // 总是显示容器
@@ -197,20 +242,42 @@ function displayDictionaryResult(result, dictionary, containerId) {
 document.querySelectorAll('.dictionary-tab').forEach(tab => {
     tab.addEventListener('click', function() {
         const dictionary = this.getAttribute('data-dictionary');
-        switchDictionary(dictionary);
+        
+        // 移除其他标签的激活状态，并隐藏所有词典结果，但是不在点击非词典区域时执行
+        document.querySelectorAll('.dictionary-content').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        // 激活点击的标签，并显示对应的词典结果
+        document.querySelectorAll('.dictionary-tab').forEach(tab => {
+            tab.classList.remove('active-tab');
+        });
+        this.classList.add('active-tab');
+        document.getElementById(`${dictionary}-container`).style.display = 'block';
     });
 });
 
-function switchDictionary(dictionary) {
-    // 移除所有标签的激活状态，并隐藏所有词典结果
-    document.querySelectorAll('.dictionary-tab').forEach(tab => {
-        tab.classList.remove('active-tab');
-    });
-    document.querySelectorAll('.dictionary-content').forEach(container => {
-        container.style.display = 'none';
-    });
+document.getElementById('scrollToTopButton').addEventListener('click', function() {
+    document.getElementById('textBox').scrollTop = 0; // 滚动到顶部
+});
 
-    // 激活点击的标签，并显示对应的词典结果
-    document.querySelector(`button[data-dictionary="${dictionary}"]`).classList.add('active-tab');
-    document.getElementById(`${dictionary}-container`).style.display = 'block';
-}
+document.addEventListener("DOMContentLoaded", function() {
+    // 获取滚动容器和返回顶部按钮的元素
+    var textBox = document.getElementById('textBox');
+    var scrollToTopButton = document.getElementById('scrollToTopButton');
+
+    // 默认隐藏返回顶部按钮
+    scrollToTopButton.style.display = 'none';
+
+    // 为滚动容器添加滚动事件监听器
+    textBox.addEventListener('scroll', function() {
+        // 检查滚动位置
+        if (textBox.scrollTop > 0) {
+            // 如果已经滚动，显示返回顶部按钮
+            scrollToTopButton.style.display = 'block';
+        } else {
+            // 如果在顶部，隐藏返回顶部按钮
+            scrollToTopButton.style.display = 'none';
+        }
+    });
+});

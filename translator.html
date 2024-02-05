@@ -25,13 +25,8 @@
     </div>
 
     <!-- 弹窗，初始时隐藏 -->
-    <div id="analysisModal"
-        style="display:none; position:fixed; top:100px; left:200px; width:450px; height:400px; background-color:white; border:1px solid #000; padding:10px; overflow:auto;">
-        
+    <div id="analysisModal">
         <div id="textBox">
-            <!-- 单词框 -->
-            <div id="wordBox"></div> 
-        
             <!-- 句子框 -->
             <div id="sentence"></div>
             <div id="translator">
@@ -46,15 +41,41 @@
                     <button class="dictionary-tab" data-dictionary="youdao">Youdao</button>
                     <button class="dictionary-tab" data-dictionary="weblio">Weblio</button>
                 </div>
-                <div id="dictionaryResult">
-                    <div id="moji-container" class="dictionary-content"></div>
-                    <div id="youdao-container" class="dictionary-content"></div>
-                    <div id="weblio-container" class="dictionary-content"></div>
+
+                <!-- Moji词典的内容 -->
+                <div id="moji-container" class="dictionary-content">
+                    <div class="dictionary-title">Moji</div>
+                </div>
+                
+                <!-- Youdao词典的内容 -->
+                <div id="youdao-container" class="dictionary-content">
+                    <div class="dictionary-title">Youdao</div>
+                </div>
+
+                <!-- Weblio词典的内容 -->
+                <div id="weblio-container" class="dictionary-content">
+                    <div class="dictionary-title">Weblio</div>
                 </div>
             </div>
 
-        <!-- 按钮框（预留） -->
-            <div id="switch">
+            <!-- 按钮框（预留） -->
+            <div id="switch"></div>
+
+            
+
+        </div>
+
+        <!-- 拖动手柄 -->
+        <div id="scrollToTopButton">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" preserveAspectRatio="none" class="frame-resizer-svg" focusable="false">
+                <path d="M 0,1 L 0.5,0 L 1,1 Z" class="frame-top-handle" fill="none" stroke="black" stroke-width="0.05"></path>
+            </svg>
+        </div>
+        <div id="resizeHandle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" preserveAspectRatio="none" class="frame-resizer-svg" focusable="false">
+                <path d="M1 0L1 1L0 1Z" class="frame-resizer-handle"></path>
+            </svg>
+        </div>
     </div>
 
     <script src="translator.js"></script>
