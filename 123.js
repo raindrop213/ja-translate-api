@@ -88,12 +88,12 @@ function googleTranslation(text) {
         .then(response => response.json())
         .then(data => {
             if (data.google) {
-                displayTranslation(data.google, 'Google', 'google-translation-container');
+                displayTranslation(data.google, 'goo', 'google-translation-container');
             }
         })
         .catch(error => {
             console.error('Error fetching traditional translation:', error);
-            displayTranslation('Google翻译失败', 'Google', 'google-translation-container');
+            displayTranslation('Google翻译失败', 'goo', 'google-translation-container');
         });
 }
 

@@ -3,20 +3,11 @@ from urllib.parse import quote
 import re
 from traceback import print_exc
 
-language_list_translator_inner = ["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar"],
+# language_list_translator_inner = ["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar"]
 globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
 
-
-def srclang():
-    
-    try:
-        l='ja'
-        return l
-    except:
-        return ''
-
-def search(word):
-    text=requests.get('https://dict.youdao.com/result?word={}&lang={}'.format(quote(word),srclang()), proxies=globalconfig).text
+def youdao(word):
+    text=requests.get('https://dict.youdao.com/result?word={}&lang={}'.format(quote(word), "ja"), proxies=globalconfig).text
     
     fnd=re.findall('<div class="head-content"(.*?)>([\\s\\S]*?)</span>(.*?)</div>',text)
     save=[] 
@@ -67,6 +58,6 @@ def search(word):
     
 
 if __name__=='__main__':
-    y = search('濡れ場')
+    y = youdao('濡れ場')
     print(y)
 

@@ -7,7 +7,7 @@ globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
 
 
      
-def search(word):
+def webilo(word):
     url='https://www.weblio.jp/content/'+ quote(word)
     x=(requests.get(url,proxies=globalconfig).text)
     x=re.sub('<img(.*?)>','',x)
@@ -29,5 +29,5 @@ def search(word):
     
 
 if __name__=='__main__':
-    w = search('豪華')
+    w = webilo('豪華')
     print(w)

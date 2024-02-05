@@ -36,10 +36,14 @@
             </div>
         </div> <!-- 文本框 -->
             <div id="dictionaryBox"> <!-- 词典框 -->
-                <button onclick="switchDictionary('weblio')">Weblio</button>
                 <button onclick="switchDictionary('moji')">Moji</button>
                 <button onclick="switchDictionary('youdao')">Youdao</button>
-                <div id="dictionaryResult"></div>
+                <button onclick="switchDictionary('weblio')">Weblio</button>
+                <div id="dictionaryResult">
+                    <div id="moji-container"></div>
+                    <div id="youdao-container"></div>
+                    <div id="weblio-container"></div>
+                </div>
             </div>
         </div>
         <!-- 按钮框（预留） -->

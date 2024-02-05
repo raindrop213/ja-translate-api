@@ -3,7 +3,7 @@ import requests
 globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
 
 
-def search(word):
+def moji(word):
     try:
         response = requests.post(
             "https://api.mojidict.com/parse/functions/union-api",
@@ -42,5 +42,5 @@ def search(word):
         return ""
 
 if __name__=='__main__':
-    m = search('濡れ場')
+    m = moji('濡れ場')
     print(m)

@@ -1,2 +1,3 @@
 .venv
 qita
+*/__pycache__
