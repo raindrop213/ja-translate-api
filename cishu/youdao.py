@@ -4,9 +4,9 @@ import re
 from traceback import print_exc
 
 # language_list_translator_inner = ["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar"]
-globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
 
 def youdao(word):
+    globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
     text=requests.get('https://dict.youdao.com/result?word={}&lang={}'.format(quote(word), "ja"), proxies=globalconfig).text
     
     fnd=re.findall('<div class="head-content"(.*?)>([\\s\\S]*?)</span>(.*?)</div>',text)

@@ -1,9 +1,9 @@
 import requests
 
-globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
-
 
 def moji(word):
+    globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
+    
     try:
         response = requests.post(
             "https://api.mojidict.com/parse/functions/union-api",

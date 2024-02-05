@@ -1,13 +1,9 @@
 import requests
 from urllib.parse import quote
 import re
-
-
-globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
-
-
      
 def webilo(word):
+    globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
     url='https://www.weblio.jp/content/'+ quote(word)
     x=(requests.get(url,proxies=globalconfig).text)
     x=re.sub('<img(.*?)>','',x)

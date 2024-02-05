@@ -106,12 +106,12 @@ function chatgptTranslation(text) {
         .then(response => response.json())
         .then(data => {
             if (data.chatgpt) {
-                displayTranslation(data.chatgpt, 'ChatGPT', 'chatgpt-translation-container');
+                displayTranslation(data.chatgpt, 'gpt', 'chatgpt-translation-container');
             }
         })
         .catch(error => {
             console.error('Error fetching ChatGPT translation:', error);
-            displayTranslation('ChatGPT翻译失败', 'ChatGPT', 'chatgpt-translation-container');
+            displayTranslation('ChatGPT翻译失败', 'gpt', 'chatgpt-translation-container');
         });
 }
 
@@ -143,8 +143,78 @@ function convertToHiragana(katakana) {
     return hiragana;
 }
 
+document.body.addEventListener('click', function(event) {
+    let target = event.target;
 
+    // 循环遍历父元素，直到找到包含`mecabSpan`类的元素或达到`body`
+    while (target !== document.body && !target.classList.contains('mecabSpan')) {
+        target = target.parentNode;
+    }
 
+    // 如果找到包含`mecabSpan`类的元素，则检查是否包含`ruby`
+    if (target && target.classList.contains('mecabSpan')) {
+        const ruby = target.querySelector('ruby'); // 尝试找到`ruby`元素
+        if (ruby) {
+            console.log('点击了含有ruby的mecabSpan元素');
+            const word = ruby.textContent.trim(); // 获取含注音的文本
+            console.log('查询的单词及其注音是：', word);
+            fetchDictionaryResults(word)
+            // 此处调用API函数，处理含注音的文本
+        } else {
+            console.log('点击了不含ruby的mecabSpan元素');
+            const wordWithoutFurigana = target.textContent.trim(); // 直接获取文本
+            console.log('查询的单词是：', wordWithoutFurigana);
+            // 可以选择进行不同的处理，或忽略
+        }
+    } else {
+        console.log('点击了其他元素');
+    }
+});
+
+function fetchDictionaryResults(word) {
+    // 默认显示Moji结果
+    fetchDictionaryResult(word, 'moji', 'moji-container');
+    // 预加载其他词典结果，但不立即显示
+    fetchDictionaryResult(word, 'youdao', 'youdao-container', true);
+    fetchDictionaryResult(word, 'weblio', 'weblio-container', true);
+}
+
+function fetchDictionaryResult(word, dictionary, containerId, hide = false) {
+    fetch(`${url}/${dictionary}?text=${encodeURIComponent(word)}`)
+        .then(response => response.json())
+        .then(data => {
+            displayDictionaryResult(data.dictionary, dictionary, containerId, hide);
+            console.log(data.dictionary)
+        })
+        .catch(error => {
+            console.error(`Error fetching ${dictionary} dictionary:`, error);
+            displayDictionaryResult(`${dictionary}查询失败`, dictionary, containerId, hide);
+        });
+}
+
+function displayDictionaryResult(result, dictionary, containerId, hide) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = hide ? '' : result; // 如果hide为true，则不立即显示结果
+    container.style.display = hide ? 'none' : 'block'; // 根据hide参数决定是否显示容器
+}
+
+function switchDictionary(dictionary) {
+    // 隐藏所有词典结果
+    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
+        const container = document.getElementById(containerId);
+        container.style.display = 'none';
+    });
+    // 显示选定的词典结果
+    const selectedContainer = document.getElementById(`${dictionary}-container`);
+    selectedContainer.style.display = 'block';
+}
+
+function clearDictionaryResults() {
+    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ''; // 清空内容
+    });
+}
 // api服务 词典：webilo：`${url}/webilo?text=${encodeURIComponent(text)}`
 // api服务 词典：moji：`${url}/moji?text=${encodeURIComponent(text)}`
 // api服务 词典：youdao：`${url}/youdao?text=${encodeURIComponent(text)}`
