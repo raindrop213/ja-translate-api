@@ -1,0 +1,94 @@
+:root {
+    --textBoxDisplay: initial;
+    --textBoxBorderHoverColor: rgba(237, 28, 36, 0.5);
+    --textBoxFontSize: 1em;
+    --colorBackground: #7873aa;
+}
+
+body {
+    overflow: hidden;
+    margin: 0;
+    background-color: var(--colorBackground);
+}
+
+.textBox {
+    display: var(--textBoxDisplay);
+    position: absolute;
+    padding: 0;
+    line-height: 1.1em;
+    font-size: 16pt;
+    white-space: nowrap;
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.textBox:hover {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0);
+    z-index: 999 !important;
+}
+
+.textBox p {
+    display: none;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+    line-height: 1.1em;
+    margin: 0;
+    background-color: rgb(255, 255, 255);
+}
+
+.textBox:hover p {
+    display: table;
+}
+
+#mecab {
+    padding: 20px;
+}
+
+
+
+.mecabSpan {
+    margin: 1px;
+    font-size: 1.5em;
+    opacity: 0.5;
+}
+.mecabSpan:hover {
+    opacity: 1;
+}
+
+.名詞, .指示詞 {
+    background-color: rgba(87, 87, 214, 0.39);
+}
+
+
+.動詞 {
+    background: rgba(0, 128, 0, 0.425);
+}
+
+.形容詞 {
+    background: rgba(124, 16, 16, 0.445);
+}
+
+.副詞 {
+    background: rgba(255, 255, 0, 0.438);
+}
+
+.助詞 {
+    background: rgba(255, 166, 0, 0.459);
+}
+
+.助動詞 {
+    background: rgba(255, 192, 203, 0.527);
+}
+
+.副詞 {
+    background: rgba(128, 0, 128, 0.466);
+}
+
+.代名詞 {
+    background: rgba(34, 178, 171, 0.473);
+}
+
+.接頭辞, .接尾辞, .接続詞, .形状詞, .感動詞,  .指示詞, .連体詞, .判定詞, .補助記号, .空白 {
+    background: rgba(128, 128, 128, 0.473);
+}
+

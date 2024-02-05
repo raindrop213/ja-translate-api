@@ -1,0 +1,51 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="123.css">
+</head>
+
+<body>
+    <div class="textBox"
+        style="left:300; top:200; width:146; height:247; font-size:26px; z-index:11; writing-mode:vertical-rl;">
+        <p>所属する店が違っても</p>
+        <p>両手袋は片手袋に．．．</p>
+        <p>片手袋は　手袋なしに</p>
+        <p>最大限の敬意を払う！！Raindrop？</p>
+    </div>
+
+    <div class="textBox"
+        style="left:500; top:200; width:90; height:207; font-size:24px; z-index:12; writing-mode:vertical-rl;">
+        <p>えっじゃあまだ</p>
+        <p>義務教育が終わって</p>
+        <p>いないんじゃ？</p>
+    </div>
+
+    <!-- 弹窗，初始时隐藏 -->
+    <div id="analysisModal"
+        style="display:none; position:fixed; top:100px; left:200px; width:450px; height:400px; background-color:white; border:1px solid #000; padding:10px; overflow:auto;">
+        <div id="wordBox"></div> <!-- 单词框 -->
+        <div id="textBox">
+            <div id="sentence"></div>
+            <div id="translator">
+                <div id="google-translation-container"></div>
+                <div id="chatgpt-translation-container"></div>
+            </div>
+        </div> <!-- 文本框 -->
+            <div id="dictionaryBox"> <!-- 词典框 -->
+                <button onclick="switchDictionary('weblio')">Weblio</button>
+                <button onclick="switchDictionary('moji')">Moji</button>
+                <button onclick="switchDictionary('youdao')">Youdao</button>
+                <div id="dictionaryResult"></div>
+            </div>
+        </div>
+        <!-- 按钮框（预留） -->
+    </div>
+
+    <script src="123.js"></script>
+</body>
+
+</html>
