@@ -145,29 +145,22 @@ function convertToHiragana(katakana) {
 }
 
 document.body.addEventListener('click', function(event) {
-    let target = event.target;
+    let target = event.target.closest('.mecabSpan'); // 直接尝试找到最近的包含`mecabSpan`类的祖先元素
 
-    // 循环遍历父元素，直到找到包含`mecabSpan`类的元素或达到`body`
-    while (target !== document.body && !target.classList.contains('mecabSpan')) {
-        target = target.parentNode;
-    }
-
-    // 如果找到包含`mecabSpan`类的元素，则检查是否包含`ruby`
-    if (target && target.classList.contains('mecabSpan')) {
+    // 如果找到包含`mecabSpan`类的元素
+    if (target) {
         const ruby = target.querySelector('ruby'); // 尝试找到`ruby`元素
         if (ruby) {
             console.log('点击了含有ruby的mecabSpan元素');
-            // 修改此处以正确处理ruby元素，去除rt标签的内容
+            // 处理ruby元素，去除rt标签的内容
             const word = Array.from(ruby.childNodes).filter(node => node.nodeType === Node.TEXT_NODE || node.nodeName.toLowerCase() !== 'rt').map(node => node.textContent).join('').trim();
             console.log('查询的单词：', word);
             fetchDictionaryResults(word);
-            // 此处调用API函数，处理不含注音的文本
         } else {
             console.log('点击了不含ruby的mecabSpan元素');
             const wordWithoutFurigana = target.textContent.trim(); // 直接获取文本
             console.log('查询的单词：', wordWithoutFurigana);
             fetchDictionaryResults(wordWithoutFurigana);
-            // 可以选择进行不同的处理，或忽略
         }
     } else {
         console.log('点击了其他元素');
@@ -179,7 +172,7 @@ function fetchDictionaryResults(word) {
     // 按顺序查询所有词典
     fetchDictionaryResult(word, 'moji', 'moji-container');
     fetchDictionaryResult(word, 'youdao', 'youdao-container');
-    fetchDictionaryResult(word, 'weblio', 'weblio-container'); // 确保这里是 'weblio'，如果API确实是 'weblio' 则保持不变
+    fetchDictionaryResult(word, 'weblio', 'weblio-container');
 }
 
 function fetchDictionaryResult(word, dictionary, containerId) {

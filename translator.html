@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="123.css">
+    <link rel="stylesheet" href="translator.css">
 </head>
 
 <body>
@@ -27,28 +27,37 @@
     <!-- 弹窗，初始时隐藏 -->
     <div id="analysisModal"
         style="display:none; position:fixed; top:100px; left:200px; width:450px; height:400px; background-color:white; border:1px solid #000; padding:10px; overflow:auto;">
-        <div id="wordBox"></div> <!-- 单词框 -->
+        
         <div id="textBox">
+            <!-- 单词框 -->
+            <div id="wordBox"></div> 
+        
+            <!-- 句子框 -->
             <div id="sentence"></div>
             <div id="translator">
                 <div id="google-translation-container"></div>
                 <div id="chatgpt-translation-container"></div>
             </div>
-        <!-- 词典切换标签 -->
-            <div id="dictionarySwitch">
-                <button class="dictionary-tab" data-dictionary="moji">Moji</button>
-                <button class="dictionary-tab" data-dictionary="youdao">Youdao</button>
-                <button class="dictionary-tab" data-dictionary="weblio">Weblio</button>
+
+            <!-- 词典框 -->
+            <div id="dictionary">
+                <div id="dictionarySwitch">
+                    <button class="dictionary-tab" data-dictionary="moji">Moji</button>
+                    <button class="dictionary-tab" data-dictionary="youdao">Youdao</button>
+                    <button class="dictionary-tab" data-dictionary="weblio">Weblio</button>
+                </div>
+                <div id="dictionaryResult">
+                    <div id="moji-container" class="dictionary-content"></div>
+                    <div id="youdao-container" class="dictionary-content"></div>
+                    <div id="weblio-container" class="dictionary-content"></div>
+                </div>
             </div>
-            <div id="dictionaryResult">
-                <div id="moji-container" class="dictionary-content"></div>
-                <div id="youdao-container" class="dictionary-content"></div>
-                <div id="weblio-container" class="dictionary-content"></div>
-            </div>
+
         <!-- 按钮框（预留） -->
+            <div id="switch">
     </div>
 
-    <script src="123.js"></script>
+    <script src="translator.js"></script>
 </body>
 
 </html>
