@@ -2,7 +2,7 @@ import requests
 from urllib.parse import quote
 import re
      
-def webilo(word):
+def weblio(word):
     globalconfig = {'https': '127.0.0.1:7890', 'http': '127.0.0.1:7890'}
     url='https://www.weblio.jp/content/'+ quote(word)
     x=(requests.get(url,proxies=globalconfig).text)
@@ -25,5 +25,5 @@ def webilo(word):
     
 
 if __name__=='__main__':
-    w = webilo('豪華')
+    w = weblio('豪華')
     print(w)

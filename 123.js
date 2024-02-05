@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     // 将分词结果显示在句子框中
-                    displayMecabResult(data.parse, document.getElementById('sentence'));
+                    displayMecabResult(data.output, document.getElementById('sentence'));
                     // 使用翻译API翻译文本并显示结果
                     googleTranslation(text);
                     chatgptTranslation(text);
@@ -87,8 +87,8 @@ function googleTranslation(text) {
     fetch(`${url}/google?text=${encodeURIComponent(text)}`)
         .then(response => response.json())
         .then(data => {
-            if (data.google) {
-                displayTranslation(data.google, 'goo', 'google-translation-container');
+            if (data.output) {
+                displayTranslation(data.output, 'goo', 'google-translation-container');
             }
         })
         .catch(error => {
@@ -105,8 +105,8 @@ function chatgptTranslation(text) {
     fetch(`${url}/chatgpt?text=${encodeURIComponent(text)}`)
         .then(response => response.json())
         .then(data => {
-            if (data.chatgpt) {
-                displayTranslation(data.chatgpt, 'gpt', 'chatgpt-translation-container');
+            if (data.output) {
+                displayTranslation(data.output, 'gpt', 'chatgpt-translation-container');
             }
         })
         .catch(error => {
@@ -165,6 +165,7 @@ document.body.addEventListener('click', function(event) {
             console.log('点击了不含ruby的mecabSpan元素');
             const wordWithoutFurigana = target.textContent.trim(); // 直接获取文本
             console.log('查询的单词：', wordWithoutFurigana);
+            fetchDictionaryResults(wordWithoutFurigana);
             // 可以选择进行不同的处理，或忽略
         }
     } else {
@@ -174,35 +175,33 @@ document.body.addEventListener('click', function(event) {
 
 
 function fetchDictionaryResults(word) {
-    // 默认显示Moji结果
+    // 按顺序查询所有词典
     fetchDictionaryResult(word, 'moji', 'moji-container');
-    // 预加载其他词典结果，但不立即显示
-    fetchDictionaryResult(word, 'youdao', 'youdao-container', true);
-    fetchDictionaryResult(word, 'webilo', 'webilo-container', true);
+    fetchDictionaryResult(word, 'youdao', 'youdao-container');
+    fetchDictionaryResult(word, 'weblio', 'weblio-container'); // 确保这里是 'weblio'，如果API确实是 'weblio' 则保持不变
 }
 
-function fetchDictionaryResult(word, dictionary, containerId, hide = false) {
+function fetchDictionaryResult(word, dictionary, containerId) {
     fetch(`${url}/${dictionary}?text=${encodeURIComponent(word)}`)
         .then(response => response.json())
         .then(data => {
-            displayDictionaryResult(data.dictionary, dictionary, containerId, hide);
-            console.log(data.dictionary)
+            displayDictionaryResult(data.output, dictionary, containerId);
         })
         .catch(error => {
             console.error(`Error fetching ${dictionary} dictionary:`, error);
-            displayDictionaryResult(`${dictionary}查询失败`, dictionary, containerId, hide);
+            displayDictionaryResult(`${dictionary}查询失败`, dictionary, containerId);
         });
-}
+}       
 
-function displayDictionaryResult(result, dictionary, containerId, hide) {
+function displayDictionaryResult(result, dictionary, containerId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = hide ? '' : result; // 如果hide为true，则不立即显示结果
-    container.style.display = hide ? 'none' : 'block'; // 根据hide参数决定是否显示容器
+    container.innerHTML = result;
+    container.style.display = 'block'; // 总是显示容器
 }
 
 function switchDictionary(dictionary) {
     // 隐藏所有词典结果
-    ['moji-container', 'youdao-container', 'webilo-container'].forEach(containerId => {
+    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
         const container = document.getElementById(containerId);
         container.style.display = 'none';
     });
@@ -212,11 +211,8 @@ function switchDictionary(dictionary) {
 }
 
 function clearDictionaryResults() {
-    ['moji-container', 'youdao-container', 'webilo-container'].forEach(containerId => {
+    ['moji-container', 'youdao-container', 'weblio-container'].forEach(containerId => {
         const container = document.getElementById(containerId);
         container.innerHTML = ''; // 清空内容
     });
 }
-// api服务 词典：webilo：`${url}/webilo?text=${encodeURIComponent(text)}`
-// api服务 词典：moji：`${url}/moji?text=${encodeURIComponent(text)}`
-// api服务 词典：youdao：`${url}/youdao?text=${encodeURIComponent(text)}`
