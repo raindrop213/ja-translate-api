@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 假定获取的文本就是textBox内的文本
             let text = textBox.textContent;
+
+            fetchAndPlayAudio(text); // 添加的代码行，用于播放文本对应的音频
+
             fetch(`${url}/parse?text=${encodeURIComponent(text)}`)
                 .then(response => response.json())
                 .then(data => {
@@ -43,6 +46,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     });
 });
+
+let currentAudio = null; // 用于跟踪当前播放的音频
+function fetchAndPlayAudio(text) {
+    // 停止当前播放的音频（如果有的话）
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0; // 将音频播放重置到开始位置
+    }
+
+    // 构建请求URL
+    const url = `http://127.0.0.1:23456/voice/vits?text=${encodeURIComponent(text)}&id=342&format=wav&lang=ja&max=200`;
+
+    // 发起fetch请求获取音频
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const audioUrl = URL.createObjectURL(blob);
+            currentAudio = new Audio(audioUrl); // 创建新的Audio对象
+            currentAudio.play().catch(error => console.error('Error playing audio:', error)); // 尝试播放音频
+        })
+        .catch(error => console.error('Error fetching audio:', error));
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const analysisModal = document.getElementById('analysisModal');
@@ -189,9 +214,6 @@ function convertToHiragana(katakana) {
 document.body.addEventListener('click', function(event) {
     let target = event.target.closest('.mecabSpan'); // 尝试找到最近的包含`mecabSpan`类的祖先元素
 
-    // 不再移除所有mecabSpan元素的.active-span类
-    
-
     // 如果找到包含`mecabSpan`类的元素
     if (target) {
         document.querySelectorAll('.mecabSpan').forEach(el => el.classList.remove('active-span')); // 先移除其他的.active-span类
@@ -285,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const analysisModal = document.getElementById('analysisModal');
-    const header = analysisModal.querySelector('.modal-header'); // 假设你的标题栏有这个类名
+    const header = analysisModal.querySelector('#textBox'); // 假设你的标题栏有这个类名
     let isDragging = false;
     let dragStartX, dragStartY;
 
@@ -293,8 +315,14 @@ document.addEventListener('DOMContentLoaded', function() {
     closeBtn.addEventListener('click', function() {
         analysisModal.style.display = 'none';
     });
+    
 
     header.addEventListener('mousedown', function(e) {
+        // 在这里检查是否按下了Ctrl键
+        if (e.ctrlKey) {
+            // 如果按下了Ctrl键，则不启动拖动
+            return;
+        }
         isDragging = true;
         dragStartX = e.clientX - analysisModal.offsetLeft;
         dragStartY = e.clientY - analysisModal.offsetTop;
@@ -304,6 +332,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function handleDragging(e) {
+        // 在拖动过程中再次检查是否按下了Ctrl键
+        if (e.ctrlKey) {
+            // 如果按下了Ctrl键，停止拖动
+            stopDragging();
+            return;
+        }
         if (isDragging) {
             const newX = e.clientX - dragStartX;
             const newY = e.clientY - dragStartY;
@@ -315,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function stopDragging() {
         isDragging = false;
         document.removeEventListener('mousemove', handleDragging);
+        document.removeEventListener('mouseup', stopDragging);
     }
 });
 

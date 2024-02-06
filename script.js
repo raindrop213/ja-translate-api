@@ -9,7 +9,7 @@ let storageKey = "mokuro_" + window.location.pathname;
 let defaultState = {
     page_idx: 0,
     page2_idx: -1,
-    hasCover: true, //首页单封面
+    hasCover: true,
     r2l: true,
     singlePageView: false,
     ctrlToPan: false,
@@ -68,6 +68,11 @@ document.addEventListener('DOMContentLoaded', function () {
         enableTextSelection: true,
 
         beforeMouseDown: function (e) {
+            // 检查事件是否发生在<div id="analysisModal">内
+            if (e.target.closest('#analysisModal') !== null) {
+                // 在这个元素内部禁用panzoom的鼠标按下事件
+                return true;
+            }
             let shouldIgnore = disablePanzoomOnElement(e.target) ||
                 (e.target.closest('.textBox') !== null) ||
                 (state.ctrlToPan && !e.ctrlKey);
@@ -75,12 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         beforeWheel: function (e) {
+            if (e.target.closest('#analysisModal') !== null) {
+                // 在<div id="analysisModal">内部禁用滚轮事件
+                return true;
+            }
             let shouldIgnore = disablePanzoomOnElement(e.target);
             return shouldIgnore;
         },
         
 
         onTouch: function (e) {
+            if (e.target.closest('#analysisModal') !== null) {
+                // 在这个元素内部也禁用触摸事件
+                e.stopPropagation();
+                return false;
+            }
             if (disablePanzoomOnElement(e.target)) {
                 e.stopPropagation();
                 return false;
@@ -110,26 +124,42 @@ function disablePanzoomOnElement(element) {
     return document.getElementById('topMenu').contains(element);
 }
 
+function copyToClipboard(text) {
+    // 创建一个隐藏的input元素
+    const input = document.createElement('input');
+    input.setAttribute('value', text);
+    document.body.appendChild(input);
+    input.select();
+    let success = false;
+
+    try {
+        // 尝试复制文本
+        success = document.execCommand('copy');
+    } catch (err) {
+        console.error('复制失败', err);
+    }
+
+    document.body.removeChild(input);
+    return success;
+}
+
 function initTextBoxes() {
-// Add event listeners for toggling ocr text boxes with the toggleOCRTextBoxes option.
     let textBoxes = document.querySelectorAll('.textBox');
     for (let i = 0; i < textBoxes.length; i++) {
         textBoxes[i].addEventListener('click', function (e) {
             if (state.toggleOCRTextBoxes) {
                 this.classList.add('hovered');
-                // Remove hovered state from all other .textBoxes
                 for (let j = 0; j < textBoxes.length; j++) {
                     if (i !== j) {
                         textBoxes[j].classList.remove('hovered');
                     }
                 }
             }
-            // 单击标签之后会复制标签文本到剪切板
-            let textWithoutNewLines = this.innerText.replace(/(\r\n|\n|\r)/gm, "");
-            navigator.clipboard.writeText(textWithoutNewLines);
+            let textWithoutNewLines = this.innerText;
+            // 这里调用修改后的复制函数和音频播放函数
+            copyToClipboard(textWithoutNewLines);
         });
     }
-// When clicking off of a .textBox, remove the hovered state.
     document.addEventListener('click', function (e) {
         if (state.toggleOCRTextBoxes) {
             if (e.target.closest('.textBox') === null) {
@@ -141,7 +171,6 @@ function initTextBoxes() {
         }
     });
 }
-
 
 function updateProperties() {
     if (state.textBoxBorders) {
@@ -307,14 +336,41 @@ document.getElementById('rightAScreen').addEventListener('click', inputRight, fa
 
 document.addEventListener("keydown", function onEvent(e) {
     switch (e.key) {
-        case "PageUp":
+        case "ArrowLeft":
+        case "a":
+            if (state.r2l) {
+                nextPage();
+            } else {
+                prevPage();
+            }
+            break;
+
+        case "ArrowRight":
+        case "d":
+            if (state.r2l) {
+                prevPage();
+            } else {
+                nextPage();
+            }
+            break;
+
         case "ArrowUp":
+        case "PageUp":
+        case "w":
             prevPage();
             break;
 
-        case "PageDown":
         case "ArrowDown":
+        case "PageDown":
+        case "s":
             nextPage();
+            break;
+
+        case "Enter":
+            toggleFullScreen();
+            setTimeout(function() {
+                zoomDefault();
+            }, 80);
             break;
 
         case "Home":
