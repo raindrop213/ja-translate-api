@@ -1,3 +1,5 @@
 .venv
 qita
 */__pycache__
+
+test

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rect = textBox.getBoundingClientRect();
             // 计算弹窗的最佳位置
             let top = rect.top + window.scrollY;
-            let left = rect.left + window.scrollX + rect.width; // 弹窗位于textBox的右侧
+            let left = rect.left + window.scrollX + rect.width + 20; // 弹窗位于textBox的右侧
             // 确保弹窗不会超出浏览器窗口
             if (left + analysisModal.offsetWidth > window.innerWidth) {
                 left = rect.left + window.scrollX - analysisModal.offsetWidth; // 如果右侧放不下，则尝试放到左侧
@@ -179,6 +179,7 @@ function convertToHiragana(katakana) {
     };
 
     let hiragana = '';
+
     for (let char of katakana) {
         hiragana += katakanaToHiraganaMap[char] || char;
     }
@@ -281,3 +282,39 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const analysisModal = document.getElementById('analysisModal');
+    const header = analysisModal.querySelector('.modal-header'); // 假设你的标题栏有这个类名
+    let isDragging = false;
+    let dragStartX, dragStartY;
+
+    // 监听关闭按钮的点击事件来隐藏弹窗
+    closeBtn.addEventListener('click', function() {
+        analysisModal.style.display = 'none';
+    });
+
+    header.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        dragStartX = e.clientX - analysisModal.offsetLeft;
+        dragStartY = e.clientY - analysisModal.offsetTop;
+        document.addEventListener('mousemove', handleDragging);
+        document.addEventListener('mouseup', stopDragging);
+        e.preventDefault(); // 防止拖动时选中文本
+    });
+
+    function handleDragging(e) {
+        if (isDragging) {
+            const newX = e.clientX - dragStartX;
+            const newY = e.clientY - dragStartY;
+            analysisModal.style.left = `${newX}px`;
+            analysisModal.style.top = `${newY}px`;
+        }
+    }
+
+    function stopDragging() {
+        isDragging = false;
+        document.removeEventListener('mousemove', handleDragging);
+    }
+});
+

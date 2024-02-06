@@ -2,7 +2,7 @@
     --textBoxDisplay: initial;
     --textBoxBorderHoverColor: rgba(237, 28, 36, 0.5);
     --textBoxFontSize: 1em;
-    --colorBackground: #7873aa;
+    --colorBackground: #e0e0e0;
 }
 
 body {
@@ -45,7 +45,7 @@ body {
 }
 
 .mecabSpan {
-    padding: 9px 2px 2px 2px;
+    padding: 10px 2px 2px 2px;
     margin: 0px 1px;
     font-size: 1em;
     opacity: 0.6;
@@ -162,9 +162,25 @@ body {
 }
 
 
+#topBar {
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    color: white;
+    cursor: move;
+    padding: 8px;
+    height: 30px;
+    box-sizing: border-box;
+    margin-bottom: 3px;
+}
+
+#closeBtn {
+    float: right;
+    cursor: pointer;
+}
+
+
 #analysisModal {
     display: none;
-    position: fixed;
+    position: fixed; /* 在mokuro里面一定不能是 relative */
     top: 100px;
     left: 200px;
     width: 450px;
@@ -173,6 +189,7 @@ body {
     border: 1px solid #000;
     padding: 7px 7px 9px 7px;
     z-index: 5000;
+    box-shadow: 0px 0px 20px rgba(124, 124, 124, 0.541);  /* 水平偏移 垂直偏移 模糊半径 扩展半径 颜色 */
 }
 
 #textBox {
